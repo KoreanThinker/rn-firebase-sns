@@ -1,3 +1,5 @@
+import React from 'react'
+import { createAppContainer } from 'react-navigation';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import { Transition } from 'react-native-reanimated';
 
@@ -25,4 +27,4 @@ const MySwitch = createAnimatedSwitchNavigator(
 );
 
 
-export default MySwitch
+export default createAppContainer(MySwitch)
