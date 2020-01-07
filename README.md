@@ -9,5 +9,5 @@
 
 
 ## 모듈
-- react-navigation
-- react-natvie-fast-image
+- [react-navigation](https://reactnavigation.org/docs/en/getting-started.html)
+- [react-natvie-fast-image](https://github.com/DylanVann/react-native-fast-image)
