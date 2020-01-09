@@ -2,13 +2,29 @@ import React from 'react'
 import { createAppContainer } from 'react-navigation';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import { Transition } from 'react-native-reanimated';
+import { createStackNavigator } from 'react-navigation-stack'
 
 import HomeScreen from './HomeScreen'
 import PostScreen from './PostScreen'
+import CommentScreen from './CommentScreen'
+
+const HomeStack = createStackNavigator(
+    {
+        HomeScreen,
+        CommentScreen
+    },
+    {
+        initialRouteName: 'HomeScreen',
+        defaultNavigationOptions: {
+            headerShown: false
+        }
+
+    }
+)
 
 const MySwitch = createAnimatedSwitchNavigator(
     {
-        HomeScreen,
+        HomeStack,
         PostScreen
     },
     {
@@ -16,11 +32,11 @@ const MySwitch = createAnimatedSwitchNavigator(
         transition: (
             <Transition.Together>
                 <Transition.Out
-                    type="slide-bottom"
+                    type='slide-right'
                     durationMs={400}
                     interpolation="easeIn"
                 />
-                <Transition.In type="fade" durationMs={500} />
+                <Transition.In type='scale' durationMs={500} />
             </Transition.Together>
         ),
     }
