@@ -6,6 +6,7 @@ import firebase from '@react-native-firebase/app';
 import '@react-native-firebase/functions';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
+import '@react-native-firebase/storage';
 
 const options = {
     title: 'Select Avatar',
@@ -45,13 +46,15 @@ const PostScreen = () => {
     const navigatoin = useNavigation();
     const [title, settitle] = useState('')
     const [descriptions, setdescriptions] = useState('');
-    const [image, setimage] = useState<string | undefined>(undefined);
+    const [image, setimage] = useState('');
 
-    useEffect(() => {
 
-    }, [])
-
-    const onPost = () => {
+    const onPost = async () => {
+        try {
+            await firebase.functions().httpsCallable('writePost')({ title, descriptions, image })
+        } catch (error) {
+            console.log('Error' + error);
+        }
         navigatoin.navigate('HomeStack');
     }
     const onImage = () => {

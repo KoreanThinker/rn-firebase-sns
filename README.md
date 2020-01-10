@@ -7,6 +7,8 @@
 - 좋아요
 - 댓글
 
+## 백엔드
+- [백엔드바로가기](https://github.com/KoreanThinker/firebase-functinos-sns)
 
 ## 모듈
 - [react-navigation](https://reactnavigation.org/docs/en/getting-started.html)

@@ -7,33 +7,16 @@ import '@react-native-firebase/functions';
 import { FlatList } from 'react-native-gesture-handler';
 import { PostType } from '../../components/typs';
 
-
-const data: PostType[] = [
-    {
-        title: '안녕',
-        description: '안녕하세요',
-        image: 'https://github.com/DylanVann/react-native-fast-image/raw/master/docs/assets/scroll.gif',
-        postid: '124',
-        likeCount: 12
-    },
-    {
-        title: '안녕',
-        description: '안녕하세요',
-        image: 'https://github.com/DylanVann/react-native-fast-image/raw/master/docs/assets/scroll.gif',
-        postid: '124',
-        likeCount: 12
-    },
-]
-
 const HomeScreen = () => {
     const navigatoin = useNavigation();
     const [post, setpost] = useState<PostType[]>([]);
 
-    const getPost = async () => {
-        const instance = firebase.functions().httpsCallable('callData')
+    const getPostList = async () => {
+        console.log('load');
+        const instance = firebase.functions().httpsCallable('getPostList')
         try {
-            const response = await instance({ data: 'se' })
-            console.log(response);
+            const response = await instance()
+            setpost(response.data.post);
         } catch (error) {
             console.log('Error: ' + error);
         }
@@ -42,18 +25,24 @@ const HomeScreen = () => {
 
     useEffect(() => {
         firebase.functions().useFunctionsEmulator('http://localhost:5000');
-        // getPost();
-        setpost(data);
+        getPostList();
     }, [])
 
-    const onLike = (postid: string) => {
-
+    const onLike = async (id: string) => {
+        const isLiked = await firebase.functions().httpsCallable('likePost')(id)
+        if (isLiked) getPostList()
     }
-    const onDelete = (postid: string) => {
-
+    const onDelete = async (id: string) => {
+        try {
+            const deleted = await firebase.functions().httpsCallable('deletePost')(id)
+            if (deleted) getPostList()
+        } catch (error) {
+            console.log('Error' + error);
+        }
     }
-    const onComment = (postid: string) => {
-        navigatoin.navigate('CommentScreen', { postid });
+    const onComment = async (id: string) => {
+        navigatoin.navigate('CommentScreen', { id });
+        console.log(id)
     }
 
 
@@ -89,19 +78,19 @@ const HomeScreen = () => {
                         <View style={{ width: '100%', height: 1, backgroundColor: '#dbdbdb' }} />
                         <View style={{ width: '100%', height: 50, flexDirection: 'row' }}>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableWithoutFeedback onPress={() => onLike(item.postid)}>
+                                <TouchableWithoutFeedback onPress={() => onLike(item.id)}>
                                     <Text>Like</Text>
                                 </TouchableWithoutFeedback>
                             </View>
 
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableWithoutFeedback onPress={() => onComment(item.postid)}>
+                                <TouchableWithoutFeedback onPress={() => onComment(item.id)}>
                                     <Text>Comment</Text>
                                 </TouchableWithoutFeedback>
                             </View>
 
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableWithoutFeedback onPress={() => onDelete(item.postid)}>
+                                <TouchableWithoutFeedback onPress={() => onDelete(item.id)}>
                                     <Text>Delete</Text>
                                 </TouchableWithoutFeedback>
                             </View>

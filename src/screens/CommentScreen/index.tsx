@@ -5,37 +5,24 @@ import FastImage from 'react-native-fast-image'
 import firebase from '@react-native-firebase/app';
 import '@react-native-firebase/functions';
 
-type Comment = {
-    description: string;
-    userid: string;
-}
-
-const data: Comment[] = [
-    {
-        description: 'hello',
-        userid: '15253'
-    },
-    {
-        description: 'hello',
-        userid: '15253'
-    },
-    {
-        description: 'hello',
-        userid: '15253'
-    }
-]
 
 const CommentScreen = () => {
     const navigation = useNavigation();
-    const [comment, setcomment] = useState<Comment[]>([])
+    const [comment, setcomment] = useState([])
 
-    const getComment = (postid: string) => {
-
+    const getComment = async (id: string) => {
+        console.log('load');
+        const instance = firebase.functions().httpsCallable('getComment')
+        try {
+            const response = await instance(id)
+            console.log(response)
+            setcomment(response.data);
+        } catch (error) {
+            console.log('Error: ' + error);
+        }
     }
-
     useEffect(() => {
-        setcomment(data);
-        getComment(navigation.state.params.postid);
+        getComment(navigation.state.params.id);
     }, [])
 
     return (
@@ -48,7 +35,7 @@ const CommentScreen = () => {
                     <Text>Comment</Text>
                 </TouchableWithoutFeedback>}
                 renderItem={({ item }) => <View style={{ width: '100%', minHeight: 50, justifyContent: 'center', padding: 10 }}>
-                    <Text>{item.userid} : {item.description}</Text>
+                    <Text>{item}</Text>
                 </View>}
             />
         </View>
